@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sudoku Challenge</title>
+  <title>Sudoku Trap</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
@@ -10,6 +10,12 @@
       color: white;
       text-align: center;
       padding: 20px;
+    }
+    h1 { margin-bottom: 5px; }
+    #timer {
+      font-size: 26px;
+      color: #ff4d4d;
+      margin-bottom: 15px;
     }
     table {
       margin: 20px auto;
@@ -29,24 +35,39 @@
       background: #222;
       color: white;
     }
-    #timer {
-      font-size: 24px;
-      margin-top: 10px;
-      color: #ff4d4d;
+    #finalMessage {
+      font-size: 32px;
+      margin-top: 30px;
+      display: none;
     }
   </style>
 </head>
 <body>
 
-<h1>You chose No 😌</h1>
-<h3>Solve this Sudoku in 60 seconds to confirm.</h3>
-
+<h1 id="title"></h1>
+<h3>Solve this Sudoku in 60 seconds.</h3>
 <div id="timer">60</div>
 
 <table id="grid"></table>
 
+<div id="finalMessage">
+  You never had a choice.<br>
+  You're stuck with me ❤️
+</div>
+
 <script>
-// Intentionally impossible Sudoku (duplicate 5s in first row)
+// Detect mode
+const params = new URLSearchParams(window.location.search);
+const mode = params.get("mode");
+
+const title = document.getElementById("title");
+if (mode === "yes") {
+  title.textContent = "Not So Easy 😏";
+} else {
+  title.textContent = "Are You Sure? 😌";
+}
+
+// Impossible Sudoku (duplicate 5 in row 1)
 const puzzle = [
 [5,5,0,0,7,0,0,0,0],
 [6,0,0,1,9,5,0,0,0],
@@ -74,9 +95,10 @@ for (let r=0; r<9; r++) {
   }
 }
 
-// Countdown
+// Timer
 let timeLeft = 60;
 const timer = document.getElementById("timer");
+const finalMessage = document.getElementById("finalMessage");
 
 const countdown = setInterval(() => {
   timeLeft--;
@@ -84,11 +106,13 @@ const countdown = setInterval(() => {
 
   if (timeLeft <= 0) {
     clearInterval(countdown);
-    window.location.href = "/yay.html";
+    document.getElementById("grid").style.display = "none";
+    timer.style.display = "none";
+    finalMessage.style.display = "block";
   }
 }, 1000);
 
-// Disable back button
+// Disable back navigation
 history.pushState(null, null, location.href);
 window.onpopstate = function () {
   history.go(1);
