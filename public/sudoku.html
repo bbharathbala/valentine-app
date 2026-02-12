@@ -36,9 +36,16 @@
       color: white;
     }
     #finalMessage {
-      font-size: 32px;
-      margin-top: 30px;
+      font-size: 28px;
+      margin-top: 20px;
       display: none;
+    }
+    .gif {
+      margin-top: 20px;
+      max-width: 80%;
+      display: none;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4);
     }
   </style>
 </head>
@@ -55,6 +62,9 @@
   You're stuck with me ❤️
 </div>
 
+<img id="yesGif" class="gif" src="https://media.tenor.com/97Ip4oc5SqEAAAAd/mr-burns-youre-here-forever-dont-forget-stuck-with-me.gif" alt="Stuck with me forever">
+<img id="noGif" class="gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExd21lc2EzZzUyeTV5aHB1ODVxYXc0a2RtN2VndWlhZnFyYWdzMmV1MyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3dj7AHql3TcFdFLi/giphy.gif" alt="No? You’re here forever">
+
 <script>
 // Detect mode
 const params = new URLSearchParams(window.location.search);
@@ -67,21 +77,20 @@ if (mode === "yes") {
   title.textContent = "Are You Sure? 😌";
 }
 
-// Impossible Sudoku (duplicate 5 in row 1)
+// Impossible Sudoku puzzle
 const puzzle = [
-[5,5,0,0,7,0,0,0,0],
-[6,0,0,1,9,5,0,0,0],
-[0,9,8,0,0,0,0,6,0],
-[8,0,0,0,6,0,0,0,3],
-[4,0,0,8,0,3,0,0,1],
-[7,0,0,0,2,0,0,0,6],
-[0,6,0,0,0,0,2,8,0],
-[0,0,0,4,1,9,0,0,5],
-[0,0,0,0,8,0,0,7,9]
+  [5,5,0,0,7,0,0,0,0],
+  [6,0,0,1,9,5,0,0,0],
+  [0,9,8,0,0,0,0,6,0],
+  [8,0,0,0,6,0,0,0,3],
+  [4,0,0,8,0,3,0,0,1],
+  [7,0,0,0,2,0,0,0,6],
+  [0,6,0,0,0,0,2,8,0],
+  [0,0,0,4,1,9,0,0,5],
+  [0,0,0,0,8,0,0,7,9]
 ];
 
 const table = document.getElementById("grid");
-
 for (let r=0; r<9; r++) {
   let row = table.insertRow();
   for (let c=0; c<9; c++) {
@@ -95,10 +104,12 @@ for (let r=0; r<9; r++) {
   }
 }
 
-// Timer
+// Timer logic
 let timeLeft = 60;
 const timer = document.getElementById("timer");
 const finalMessage = document.getElementById("finalMessage");
+const yesGif = document.getElementById("yesGif");
+const noGif = document.getElementById("noGif");
 
 const countdown = setInterval(() => {
   timeLeft--;
@@ -106,17 +117,26 @@ const countdown = setInterval(() => {
 
   if (timeLeft <= 0) {
     clearInterval(countdown);
+
+    // hide grid + timer
     document.getElementById("grid").style.display = "none";
     timer.style.display = "none";
+
+    // show text
     finalMessage.style.display = "block";
+
+    // show correct GIF
+    if (mode === "yes") {
+      yesGif.style.display = "block";
+    } else {
+      noGif.style.display = "block";
+    }
   }
 }, 1000);
 
-// Disable back navigation
+// Disable back navigation (prevents hitting back)
 history.pushState(null, null, location.href);
-window.onpopstate = function () {
-  history.go(1);
-};
+window.onpopstate = () => { history.go(1); };
 </script>
 
 </body>
